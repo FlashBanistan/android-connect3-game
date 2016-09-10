@@ -3,10 +3,23 @@ package com.example.android.connect3game;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        TextView currentTurn = (TextView) findViewById(R.id.topMessage);
+        currentTurn.setText("Player " + activePlayer + " go!");
+    }
 
     /* Player 1 equals 1. Player 2 equals 2 */
     int activePlayer = 1;
@@ -41,25 +54,40 @@ public class MainActivity extends AppCompatActivity {
         for (int[] winningPosition : winningPositions) {
             if (gameState[winningPosition[0]] == gameState[winningPosition[1]] && gameState[winningPosition[1]] == gameState[winningPosition[2]] && gameState[winningPosition[0]] != 3) {
 
-                activePlayer = 3; //3 means game is over and no further plays are allowed.
                 currentTurn.setText("Player " + gameState[winningPosition[0]] + " wins!");
+                Button resetGame = (Button)findViewById(R.id.play_again_btn);
+                resetGame.setVisibility(View.VISIBLE);
+                activePlayer = 3; //3 means game is over and no further plays are allowed.
                 return;
-
 
             }
         }
-
 
 
         currentTurn.setText("Player " + activePlayer + " go!");
 
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public void resetGame (View view) {
 
+        /* Reset active player */
+        activePlayer = 1;
+
+        /* Reset game state */
+        for (int i = 0; i < gameState.length; i++) {
+            gameState[i] = 3;
+        }
+
+        /* Make images invisible */
+        GridLayout gridLayout = (GridLayout)findViewById(R.id.gridLayout);
+        for(int i = 0; i < gridLayout.getChildCount(); i++) {
+            ((ImageView) gridLayout.getChildAt(i)).setImageResource(0);
+        }
+
+        /* Hide the button */
+        view.setVisibility(View.INVISIBLE);
+
+        /* Change top text to indicate whose turn it is */
         TextView currentTurn = (TextView) findViewById(R.id.topMessage);
         currentTurn.setText("Player " + activePlayer + " go!");
     }
